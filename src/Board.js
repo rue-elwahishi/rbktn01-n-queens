@@ -18,7 +18,8 @@
       }
     },
 
-    rows: function() {
+    rows: function() {  
+
       return _(_.range(this.get('n'))).map(function(rowIndex) {
         return this.get(rowIndex);
       }, this);
@@ -79,11 +80,28 @@
     //
     // test if a specific row on this board contains a conflict
     hasRowConflictAt: function(rowIndex) {
+      var rows = this.rows()[rowIndex]
+      var counter = 0;
+      for (var i = 0; i < rows.length; i++) {
+        if(rows[i] == 1) {
+          counter++;
+        }
+        if(counter > 1){
+          return true;
+        }
+      }
+
       return false; // fixme
     },
 
     // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function() {
+      var rows = this.rows();
+      for (var i = 0; i < rows.length; i++) {
+        if(this.hasRowConflictAt(i)){
+          return true;
+        }
+      }
       return false; // fixme
     },
 
@@ -94,11 +112,27 @@
     //
     // test if a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
+      var rows = this.rows()
+      var count = 0;
+      for(var i = 0; i < rows.length; i++){
+        if(rows[i][colIndex] === 1){
+            count++
+        }
+        if(count > 1){
+          return true;
+        }
+      }
       return false; // fixme
     },
 
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
+      var rows = this.rows()
+      for(var i = 0; i < rows.length; i++){
+        if(this.hasColConflictAt(i)){
+          return true;
+        }
+      }
       return false; // fixme
     },
 
@@ -109,11 +143,37 @@
     //
     // test if a specific major diagonal on this board contains a conflict
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+     var rows = this.rows()
+     var count = 0;
+     for (var i = 1; i < rows.length; i++) {
+       for (var j = 0; j < rows.length; j++) {
+         if (rows[i][j] == 1) {
+          if(j - i == majorDiagonalColumnIndexAtFirstRow) {
+            return true;
+          }
+         }
+       }
+     }
+
+      return false; 
     },
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
+      var rows = this.rows();
+      var obj = {};
+      for (var i = 0; i < rows.length; i++) {
+        for(var j = 0; j < rows.length; j++) {
+          if(rows[i][j] == 1) {
+            if(obj[j - i] == undefined) {
+              obj[j - i] = 0;
+            }else {
+              obj[j - i]++;
+            }
+          }
+        }
+      }
+      if(Object.values(obj).includes(1)) return true;
       return false; // fixme
     },
 
@@ -124,13 +184,41 @@
     //
     // test if a specific minor diagonal on this board contains a conflict
     hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
+     var rows = this.rows()
+     var count = 0;
+     for (var i = 1; i < rows.length; i++) {
+       for (var j = 0; j < rows.length; j++) {
+         if (rows[i][j] == 1) {
+          if(j + i == minorDiagonalColumnIndexAtFirstRow) {
+            return true;
+          }
+         }
+       }
+     }
+
       return false; // fixme
     },
+      
+  
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
+       var rows = this.rows();
+      var obj = {};
+      for (var i = 0; i < rows.length; i++) {
+        for(var j = 0; j < rows.length; j++) {
+          if(rows[i][j] == 1) {
+            if(obj[j + i] == undefined) {
+              obj[j + i] = 0;
+            }else {
+              obj[j + i]++;
+            }
+          }
+        }
+      }
+      if(Object.values(obj).includes(1)) return true;
       return false; // fixme
-    }
+    },
 
     /*--------------------  End of Helper Functions  ---------------------*/
 
@@ -146,3 +234,21 @@
   };
 
 }());
+
+      // var rows = this.rows();
+      // var obj = {}
+      // for (var i = 0; i < rows.length; i++) {
+      //   for (var j = 0; j < rows.length; j++) {
+      //     if(rows[i][j] == 1){
+      //       if(obj[j - i] === undefined){
+      //         obj[j - i] = 0;
+      //       }else {
+      //         obj[j - i] += 1;
+      //       }
+      //     }
+      //   }
+      // }
+      // console.log(obj, 'obj')
+      // if(Object.values(obj).includes(1)){
+      //   return true;
+      // }
